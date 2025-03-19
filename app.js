@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { App } = require('@slack/bolt');
 
 const app = new App({
@@ -7,6 +8,7 @@ const app = new App({
     appToken: process.env.SLACK_APP_TOKEN,
     port: process.env.PORT
   });
+  
   app.message('hello', async ({ message, say }) => {
     await say(`Hey there <@${message.user}>!`);
   });
