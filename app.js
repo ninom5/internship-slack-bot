@@ -1,6 +1,10 @@
-// import { configDotenv } from 'dotenv';
-const { App } = require('@slack/bolt');
-import {sheetsApi} from './sheetsApi.js';
+import pkg from '@slack/bolt';
+import { sheetsApi } from './sheetsApi.js';
+import dotenv from 'dotenv';
+
+dotenv.config(); 
+
+const { App } = pkg; 
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
