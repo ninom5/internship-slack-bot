@@ -1,5 +1,6 @@
-require('dotenv').config();
+// import { configDotenv } from 'dotenv';
 const { App } = require('@slack/bolt');
+import {sheetsApi} from './sheetsApi.js';
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
@@ -11,6 +12,7 @@ const app = new App({
   
   app.message('hello', async ({ message, say }) => {
     await say(`Hey there <@${message.user}>!`);
+    sheetsApi();
   });
   
   (async () => {
