@@ -16,14 +16,30 @@ const app = new App({
 
 app.message(async ({ message, say }) => {
   try {
+    const userMessage = message.text.trim().toLowerCase();
+
+    if(userMessage === "hi" || userMessage === "hello") {
+      await say({ text: `Hello  <@${message.user}>! :wave:` });
+      return;
+    }
+
     const response = await sheetsApi(message.text);
 
-    console.log(response);
+    console.log("response:", response);
+    if(response.length === 0) {
+      await say({ text: "No data found" });
+      return;
+    }
 
-    await say({ text: response });
+    const formattedResponse = response
+    .map(({ item, locations }) => `Last known locations of *${item}*: ${locations.map(loc => `*${loc}*`).join(", ")}.`)
+    .join("\n");
+
+    await say({ text: formattedResponse });
   } 
   catch (error) {
     console.log(error);
+    await say({ text: "An error occurred: ", error });
   }
 });
 

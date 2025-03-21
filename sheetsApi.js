@@ -22,19 +22,35 @@ export const sheetsApi = async (userMessage) => {
   try {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.SHEET_ID,
-      range: "Sheet1!A1:B2",
+      range: "Sheet1!A:B",
     });
 
     const resultRows = response.data.values;
 
-    if (!resultRows || resultRows.length === 0) {
+    if (!resultRows || resultRows.length <= 1) {
       console.log("Data empty");
-      return;
+      return [];
     }
 
-    const matchResults =likelyMatches(userMessage, resultRows.flat());
+    const dataRows = resultRows.slice(1);
 
-    return matchResults;
+    const itemLocationMap = new Map();
+
+    dataRows.forEach(([item, location]) => {
+      if (!itemLocationMap.has(item)) 
+        itemLocationMap.set(item, new Set());
+      
+      itemLocationMap.get(item).add(location);
+    });
+
+    const matchResults = likelyMatches(userMessage, Array.from(itemLocationMap.keys()));
+
+    const formattedResults = matchResults.map(match => ({
+      item: match.item,
+      locations: Array.from(itemLocationMap.get(match.item) || []),
+    }));
+
+    return formattedResults;
   } catch (error) {
     console.log(error);
     throw new Error("Error fetching data from Google Sheets");
