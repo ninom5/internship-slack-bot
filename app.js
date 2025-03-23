@@ -25,7 +25,6 @@ app.message(async ({ message, say }) => {
 
     const response = await sheetsApi(message.text);
 
-    console.log("response:", response);
     if(response.length === 0) {
       await say({ text: "No data found" });
       return;

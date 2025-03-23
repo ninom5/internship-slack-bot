@@ -27,25 +27,24 @@ export const sheetsApi = async (userMessage) => {
 
     const resultRows = response.data.values;
 
-    if (!resultRows || resultRows.length <= 1) {
-      console.log("Data empty");
-      return [];
-    }
+    if (!resultRows || resultRows.length <= 1) return [];
 
     const dataRows = resultRows.slice(1);
 
     const itemLocationMap = new Map();
 
     dataRows.forEach(([item, location]) => {
-      if (!itemLocationMap.has(item)) 
-        itemLocationMap.set(item, new Set());
-      
+      if (!itemLocationMap.has(item)) itemLocationMap.set(item, new Set());
+
       itemLocationMap.get(item).add(location);
     });
 
-    const matchResults = likelyMatches(userMessage, Array.from(itemLocationMap.keys()));
+    const matchResults = likelyMatches(
+      userMessage,
+      Array.from(itemLocationMap.keys())
+    );
 
-    const formattedResults = matchResults.map(match => ({
+    const formattedResults = matchResults.map((match) => ({
       item: match.item,
       locations: Array.from(itemLocationMap.get(match.item) || []),
     }));
